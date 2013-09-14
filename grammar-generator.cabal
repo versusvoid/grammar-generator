@@ -1,0 +1,14 @@
+name:                grammar-generator
+version:             0.0.1
+synopsis:            gg
+author:              versusvoid
+category:            Math
+build-type:          Simple
+cabal-version:       >=1.8
+
+executable grammar-generator
+  main-is: Main.hs
+  hs-source-dirs:      src
+  build-depends:
+      base    >= 4.6
+    , random  >= 1.0.1.1
