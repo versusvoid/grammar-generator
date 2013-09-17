@@ -11,4 +11,4 @@ main :: IO ()
 main = void ((genSome :: IO S) >>= print)
 
 genSome :: Any a => IO a
-genSome = generate any <$> R.newStdGen
+genSome = runGen any <$> R.newStdGen

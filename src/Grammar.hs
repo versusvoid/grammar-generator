@@ -2,8 +2,7 @@ module Grammar where
 
 import Prelude hiding(any)
 import Any
-import Control.Applicative((<$>), (<*>), liftA)
-import Data.Function(on)
+import Control.Applicative((<$>), (<*>))
 
 data S = Start B C W
 data W = End E | Middle E W
@@ -23,7 +22,7 @@ instance Show W where
     show (Middle e w) = show e ++ "\n" ++ show w
 
 instance Any W where
-    any = choose (End <$> any) (Middle <$> any <*> any)
+    any = (End <$> any) <?> (Middle <$> any <*> any)
 
 instance Show E where
     show (Rule a b c) = show a ++ " <- " ++ show b ++ show c
@@ -42,18 +41,14 @@ instance Show B where
     show (Terminal c) = [c]
 
 instance Any B where
-    any = choose (A <$> any)
-          (Terminal <$> toEnum <$>
-               choose ((+32)   <$> (`mod` 33) <$> any) 
-                      ((+1040) <$> (`mod` 64) <$> any))
+    any = (A <$> any)
+      <?> (Terminal <$> toEnum <$>
+                      ((+32)   <$> (`mod` 33) <$> any) 
+                 <?>  ((+1040) <$> (`mod` 64) <$> any))
 
 instance Show C where
     show (C b c) = show b ++ show c
     show Epsilon = ""
 
 instance Any C where
-    any = do
-        flag <- any
-        if flag
-          then C <$> any <*> any
-          else return Epsilon
+    any = (C <$> any <*> any) <?> (return Epsilon)
